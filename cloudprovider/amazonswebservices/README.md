@@ -29,7 +29,14 @@ serviceAccount:
     eks.amazonaws.com/role-arn: "arn:aws:iam::xxxxxxxxx:role/test"
 aws:
   region: "us-east-1"
-  endpoint_url: "https://elasticloadbalancing.us-east-1.amazonaws.com"
+  # Do NOT set endpoint_url unless you know you need it.
+  # It is a GLOBAL endpoint override applied to ALL AWS calls made by the controller,
+  # including the startup STS GetCallerIdentity call. Pointing it at the ELB endpoint
+  # hijacks that STS call and causes the controller to fail on startup with
+  # "InvalidAction: Could not find operation GetCallerIdentity for version 2011-06-15".
+  # The ELB endpoint is automatically resolved from `region`, so this field is not needed
+  # for normal use; it only applies to PrivateLink-style setups, and even then STS must be
+  # given its own endpoint via the AWS_IDENTITY_ENDPOINT_URL environment variable.
 ```
 
 The key to deploying this project lies in authorizing the k8s ServiceAccount to access the NLB SDK, which is recommended to be done through an IAM role:

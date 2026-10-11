@@ -28,7 +28,14 @@ serviceAccount:
     eks.amazonaws.com/role-arn: "arn:aws:iam::xxxxxxxxx:role/test"
 aws:
   region: "us-east-1"
-  endpoint_url: "https://elasticloadbalancing.us-east-1.amazonaws.com"
+  # 除非明确需要，否则请不要设置 endpoint_url。
+  # 它是一个全局 endpoint 覆盖项，会应用于 controller 发出的所有 AWS 调用，
+  # 包括启动时的 STS GetCallerIdentity 调用。将其指向 ELB endpoint 会劫持该 STS 调用，
+  # 导致 controller 启动失败，报错 "InvalidAction: Could not find operation
+  # GetCallerIdentity for version 2011-06-15"。
+  # ELB endpoint 会根据 `region` 自动解析，因此正常场景下不需要此字段；
+  # 仅在 PrivateLink 场景下才可能需要，此时 STS 也必须通过
+  # AWS_IDENTITY_ENDPOINT_URL 环境变量单独指定其 endpoint。
 ```
 
 部署该项目最关键的在于授权k8s ServiceAccount访问NLB SDK，推荐通过IAM角色的方式：
