@@ -36,7 +36,7 @@ aws:
   # "InvalidAction: Could not find operation GetCallerIdentity for version 2011-06-15".
   # The ELB endpoint is automatically resolved from `region`, so this field is not needed
   # for normal use; it only applies to PrivateLink-style setups, and even then STS must be
-  # given its own endpoint via the AWS_IDENTITY_ENDPOINT_URL environment variable.
+  # given its own endpoint with `identity_endpoint_url` (also under `aws`).
 ```
 
 The key to deploying this project lies in authorizing the k8s ServiceAccount to access the NLB SDK, which is recommended to be done through an IAM role:

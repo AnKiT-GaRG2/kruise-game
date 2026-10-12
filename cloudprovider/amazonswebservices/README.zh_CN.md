@@ -35,7 +35,7 @@ aws:
   # GetCallerIdentity for version 2011-06-15"。
   # ELB endpoint 会根据 `region` 自动解析，因此正常场景下不需要此字段；
   # 仅在 PrivateLink 场景下才可能需要，此时 STS 也必须通过
-  # AWS_IDENTITY_ENDPOINT_URL 环境变量单独指定其 endpoint。
+  # identity_endpoint_url（同样位于 `aws` 下）单独指定其 endpoint。
 ```
 
 部署该项目最关键的在于授权k8s ServiceAccount访问NLB SDK，推荐通过IAM角色的方式：
